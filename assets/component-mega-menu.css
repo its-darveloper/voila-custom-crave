@@ -1,11 +1,28 @@
+:root {
+  --menu-transition-duration: 0.4s;
+  --menu-leaf-icon-size: 1.8rem;
+  --menu-background-opacity: 0.98;
+  --menu-accent-color: 124, 180, 107; /* Biophilic green accent color */
+  --menu-warm-bg-color: 245, 239, 224; /* Warm beige f5efe0 */
+  --menu-deep-green: 42, 110, 63; /* Deep green 2a6e3f */
+  --menu-pattern-opacity: 0.05;
+}
+
 .mega-menu {
   position: static;
 }
 
 .mega-menu__content {
-  background-color: rgb(var(--color-background));
+  background-color: rgb(var(--menu-warm-bg-color));
+  background-image: 
+    linear-gradient(120deg, rgba(var(--menu-deep-green), var(--menu-pattern-opacity)) 0%, transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(var(--menu-accent-color), var(--menu-pattern-opacity)) 0%, transparent 60%),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none"><path d="M30 50C30 40 40 30 50 30C60 30 70 40 70 50C70 60 60 70 50 70" stroke="rgba(42, 110, 63, 0.06)" stroke-width="1.5"/></svg>');
+  background-size: cover, cover, 400px 400px;
+  background-repeat: no-repeat, no-repeat, repeat;
+  backdrop-filter: blur(10px);
   border-left: 0;
-  border-radius: 0;
+  border-radius: 0 0 16px 16px;
   border-right: 0;
   left: 0;
   overflow-y: auto;
@@ -14,6 +31,8 @@
   position: absolute;
   right: 0;
   top: 100%;
+  box-shadow: 0 8px 32px rgba(var(--menu-deep-green), 0.15);
+  border-bottom: 1px solid rgba(var(--menu-deep-green), 0.12);
 }
 
 .shopify-section-header-sticky .mega-menu__content {
@@ -27,6 +46,8 @@
 .js .mega-menu__content {
   opacity: 0;
   transform: translateY(-1.5rem);
+  transition: opacity var(--menu-transition-duration) ease, 
+              transform var(--menu-transition-duration) ease;
 }
 
 .mega-menu[open] .mega-menu__content {
@@ -34,26 +55,86 @@
   transform: translateY(0);
 }
 
+/* Featured section in mega menu */
+.mega-menu__featured {
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.mega-menu__featured-image {
+  height: 180px;
+  background-color: rgba(var(--menu-deep-green), 0.05);
+  background-image: linear-gradient(135deg, rgba(var(--menu-deep-green), 0.1) 0%, transparent 70%),
+                    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="rgba(42, 110, 63, 0.3)" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>');
+  background-repeat: no-repeat, repeat;
+  background-size: cover, 100px 100px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid rgba(var(--menu-deep-green), 0.1);
+}
+
+.mega-menu__featured-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(var(--menu-deep-green), 0.9);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(var(--menu-deep-green), 0.4);
+}
+
+/* Main menu list */
 .mega-menu__list {
   display: grid;
-  gap: 1.8rem 4rem;
+  gap: 2.4rem 4rem;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   list-style: none;
 }
 
 .mega-menu__link {
-  color: rgba(var(--color-foreground), 0.75);
+  color: rgba(var(--menu-deep-green), 0.9);
   display: block;
   line-height: calc(1 + 0.3 / var(--font-body-scale));
-  padding-bottom: 0.6rem;
-  padding-top: 0.6rem;
+  padding: 0.8rem 1.2rem;
   text-decoration: none;
-  transition: text-decoration var(--duration-short) ease;
+  transition: all var(--duration-short) ease;
   word-wrap: break-word;
+  border-radius: 8px;
+  position: relative;
+}
+
+/* Add leaf icon to menu items */
+.mega-menu__link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  opacity: 0;
+  height: var(--menu-leaf-icon-size);
+  width: var(--menu-leaf-icon-size);
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="rgb(42, 110, 63)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: translateX(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .mega-menu__link--level-2 {
   font-weight: bold;
+  font-size: 1.1em;
+  letter-spacing: 0.02em;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.08);
+  margin-bottom: 0.5rem;
 }
 
 .header--top-center .mega-menu__list {
@@ -68,14 +149,21 @@
   padding-right: 2.4rem;
 }
 
-.mega-menu__link:hover,
-.mega-menu__link--active {
-  color: rgb(var(--color-foreground));
-  text-decoration: underline;
+.mega-menu__link:hover {
+  color: rgb(var(--menu-deep-green));
+  background-color: rgba(var(--menu-deep-green), 0.08);
+  transform: translateY(-2px);
 }
 
-.mega-menu__link--active:hover {
-  text-decoration-thickness: 0.2rem;
+.mega-menu__link--active {
+  color: rgb(var(--menu-deep-green));
+  font-weight: 600;
+  padding-left: 2.2rem;
+}
+
+.mega-menu__link--active::before {
+  opacity: 1;
+  transform: translateX(-90%);
 }
 
 .mega-menu .mega-menu__list--condensed {
@@ -84,4 +172,87 @@
 
 .mega-menu__list--condensed .mega-menu__link {
   font-weight: normal;
+  transition: all 0.2s ease;
+}
+
+/* Footer section in mega menu */
+.mega-menu__footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(var(--color-foreground), 0.08);
+}
+
+.mega-menu__quick-links {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.mega-menu__quick-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(var(--menu-deep-green), 0.9);
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: rgba(var(--menu-deep-green), 0.08);
+  transition: all 0.3s ease;
+}
+
+.mega-menu__quick-link:hover {
+  color: white;
+  background-color: rgba(var(--menu-deep-green), 0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--menu-deep-green), 0.2);
+}
+
+/* Animate list items on menu open */
+.mega-menu[open] .mega-menu__list > li {
+  animation: slideInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animation for list items */
+.mega-menu[open] .mega-menu__list > li:nth-child(1) { animation-delay: 0.1s; }
+.mega-menu[open] .mega-menu__list > li:nth-child(2) { animation-delay: 0.15s; }
+.mega-menu[open] .mega-menu__list > li:nth-child(3) { animation-delay: 0.2s; }
+.mega-menu[open] .mega-menu__list > li:nth-child(4) { animation-delay: 0.25s; }
+.mega-menu[open] .mega-menu__list > li:nth-child(5) { animation-delay: 0.3s; }
+.mega-menu[open] .mega-menu__list > li:nth-child(6) { animation-delay: 0.35s; }
+
+/* Add natural motion to hover effects */
+@media (prefers-reduced-motion: no-preference) {
+  .mega-menu__link,
+  .mega-menu__quick-link {
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+/* Accessibility - reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .js .mega-menu__content {
+    transition: opacity 0.1s ease;
+  }
+  
+  .mega-menu__link:hover,
+  .mega-menu__quick-link:hover {
+    transform: none;
+  }
+  
+  .mega-menu[open] .mega-menu__list > li {
+    animation: none;
+    opacity: 1;
+  }
 }

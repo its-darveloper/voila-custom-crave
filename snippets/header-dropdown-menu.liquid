@@ -5,7 +5,7 @@
   {% render 'header-dropdown-menu' %}
 {% endcomment %}
 
-<nav class="header__inline-menu">
+<nav class="header__inline-menu bio-menu">
   <ul class="list-menu list-menu--inline" role="list">
     {%- for link in section.settings.menu.links -%}
       <li>
@@ -15,12 +15,18 @@
               <summary
                 id="HeaderMenu-{{ link.handle }}"
                 class="header__menu-item list-menu__item link focus-inset"
+                aria-expanded="false"
+                aria-controls="HeaderMenu-MenuList-{{ forloop.index }}"
               >
                 <span
                   {%- if link.child_active %}
                     class="header__active-menu-item"
                   {% endif %}
                 >
+                  {% if forloop.index == 1 %}
+                    <!-- Add leaf icon to first menu item to emphasize biophilic theme -->
+                    <svg class="bio-menu-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  {% endif %}
                   {{- link.title | escape -}}
                 </span>
                 {{- 'icon-caret.svg' | inline_asset_content -}}
@@ -37,7 +43,7 @@
                       <a
                         id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
                         href="{{ childlink.url }}"
-                        class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} list-menu__item--active{% endif %}"
+                        class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if childlink.current %} list-menu__item--active{% endif %} bio-menu-item"
                         {% if childlink.current %}
                           aria-current="page"
                         {% endif %}
@@ -49,6 +55,8 @@
                         <summary
                           id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
                           class="header__menu-item link link--text list-menu__item focus-inset caption-large"
+                          aria-expanded="false"
+                          aria-controls="HeaderMenu-SubMenuList-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
                         >
                           <span>{{ childlink.title | escape }}</span>
                           {{- 'icon-caret.svg' | inline_asset_content -}}
@@ -62,7 +70,7 @@
                               <a
                                 id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
                                 href="{{ grandchildlink.url }}"
-                                class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if grandchildlink.current %} list-menu__item--active{% endif %}"
+                                class="header__menu-item list-menu__item link link--text focus-inset caption-large{% if grandchildlink.current %} list-menu__item--active{% endif %} bio-menu-item"
                                 {% if grandchildlink.current %}
                                   aria-current="page"
                                 {% endif %}
@@ -83,7 +91,7 @@
           <a
             id="HeaderMenu-{{ link.handle }}"
             href="{{ link.url }}"
-            class="header__menu-item list-menu__item link link--text focus-inset"
+            class="header__menu-item list-menu__item link link--text focus-inset bio-nav-link"
             {% if link.current %}
               aria-current="page"
             {% endif %}
@@ -93,6 +101,10 @@
                 class="header__active-menu-item"
               {% endif %}
             >
+              {% if forloop.index == 1 %}
+                <!-- Add leaf icon to first menu item to emphasize biophilic theme -->
+                <svg class="bio-menu-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              {% endif %}
               {{- link.title | escape -}}
             </span>
           </a>
@@ -101,3 +113,133 @@
     {%- endfor -%}
   </ul>
 </nav>
+
+<style>
+  :root {
+    --dropdown-warm-bg: #f5efe0;
+    --dropdown-deep-green: #2a6e3f;
+    --dropdown-accent-green: rgb(124, 180, 107);
+  }
+
+  /* Biophilic styling for dropdown navigation */
+  .bio-menu .list-menu__item {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Subtle background hover effect mimicking water ripple */
+  .bio-menu .list-menu__item:hover {
+    transform: translateY(-2px);
+  }
+  
+  .bio-menu .list-menu__item::after {
+    content: '';
+    position: absolute;
+    background: radial-gradient(circle, rgba(42, 110, 63, 0.3) 0%, rgba(42, 110, 63, 0) 70%);
+    width: 150px;
+    height: 150px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    z-index: -1;
+  }
+  
+  .bio-menu .list-menu__item:hover::after {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.15;
+  }
+  
+  /* Vertical lift effect on menu items */
+  @media (prefers-reduced-motion: no-preference) {
+    .bio-menu-item {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  background-color 0.3s ease;
+    }
+    
+    .bio-menu-item:hover {
+      transform: translateY(-2px);
+      background-color: rgba(42, 110, 63, 0.08);
+    }
+  }
+  
+  /* Leaf icon in menu items */
+  .bio-menu-icon {
+    margin-right: 6px;
+    vertical-align: middle;
+    stroke: var(--dropdown-deep-green);
+  }
+  
+  /* Custom styling for dropdown menu */
+  .header__submenu {
+    background-color: var(--dropdown-warm-bg) !important;
+    background-image: 
+      linear-gradient(135deg, rgba(42, 110, 63, 0.04) 0%, transparent 50%),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none"><path d="M30 50C30 40 40 30 50 30C60 30 70 40 70 50C70 60 60 70 50 70" stroke="rgba(42, 110, 63, 0.06)" stroke-width="1.5"/></svg>') !important;
+    background-size: cover, 300px 300px !important;
+    background-repeat: no-repeat, repeat !important;
+    border: 1px solid rgba(42, 110, 63, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(42, 110, 63, 0.12) !important;
+  }
+  
+  .header__submenu .header__menu-item {
+    color: #2a2a2a !important;
+  }
+  
+  /* Active state styling */
+  .header__submenu .list-menu__item--active {
+    color: var(--dropdown-deep-green) !important;
+    font-weight: 600;
+  }
+  
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .bio-menu .list-menu__item:hover {
+      transform: none;
+    }
+    
+    .bio-menu .list-menu__item::after {
+      display: none;
+    }
+    
+    .bio-menu-item:hover {
+      transform: none;
+    }
+  }
+  
+  /* Improve color contrast for accessibility */
+  .header__submenu .header__menu-item:hover,
+  .header__submenu .header__menu-item:focus {
+    color: var(--dropdown-deep-green) !important;
+    background-color: rgba(245, 239, 224, 0.8) !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add accessibility enhancement for menu items
+    const menuItems = document.querySelectorAll('.header__menu-item');
+    
+    menuItems.forEach(item => {
+      if (item.tagName === 'SUMMARY') {
+        item.addEventListener('click', function() {
+          const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+          this.setAttribute('aria-expanded', !expanded);
+        });
+        
+        // Close menu when pressing Escape
+        item.parentElement.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape' && this.hasAttribute('open')) {
+            this.removeAttribute('open');
+            item.setAttribute('aria-expanded', 'false');
+            item.focus();
+          }
+        });
+      }
+    });
+  });
+</script>
